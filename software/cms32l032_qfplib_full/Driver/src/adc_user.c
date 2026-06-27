@@ -18,6 +18,8 @@ Includes
 /* End user code. Do not edit comment generated here */
 #include "userdefine.h"
 
+#define ADC_VDD_3V3_COMPENSATE
+
 /***********************************************************************************************************************
 Pragma directive
 ***********************************************************************************************************************/
@@ -73,8 +75,10 @@ int16_t adc_get_temperature(int16_t dat)
 {
     int16_t temp;   /* temperature value */
 
+#ifdef ADC_VDD_3V3_COMPENSATE
     /* TSN校准值在3.0V参考下标定, VDD=3.3V需补偿: dat_3.0V = dat_3.3V * 33/30 */
     dat = (int16_t)((int32_t)dat * 33 / 30);
+#endif
     temp = (int16_t)(TSN->TSN25 - dat) * 60 / (TSN->TSN25 - TSN->TSN85) + 25; /* 12bit dat */
 
     return (temp);
